@@ -1,14 +1,14 @@
-{% extends 'base.html' %}
-{% block content %}
-    <form method="post">
-        <h3>Add New Post</h3>
-        Title: 
-        <br><input type="text" name="title"><br><br>
-        Description: 
-        <br><textarea name="content" id="" cols="50" rows="10"></textarea><br><br>
-        Posted By: 
-        <br><input type="text" name="author"><br>
-        <br>
-        <button type="submit">Post</button>
-    </form>
+{% extends 'base.html' %} {% block content %}
+<form method="post">
+  <h3>Add New Post</h3>
+  Title:
+  <br /><input type="text" name="title" /><br /><br />
+  Description:
+  <br /><textarea name="content" id="" cols="50" rows="10"></textarea
+  ><br /><br />
+  Posted By:
+  <br /><input type="text" name="author" /><br />
+  <br />
+  <button type="submit">Post</button>
+</form>
 {% endblock %}
