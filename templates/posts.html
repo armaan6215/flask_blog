@@ -2,10 +2,11 @@
 
 {% block content %}
     {% for post in posts %}
-        <div class='post'>
-            <p>{{ post['created'] }}</p>
-            <h2>{{ post['title'] }}</h2>
-            <p>{{ post['content'] }}</p>
+        <div class='post' style="width: 500px; border: 3px solid #73AD21; margin-bottom: 3px;">
+            <h1>{{ post['title'] }}</h1>
+            <p>{{ post['content'] }}</p><br>
+            <h4>Posted by: {{ post['author'] }}</h4>
+
         </div>
     {% endfor %}
 {% endblock %}
