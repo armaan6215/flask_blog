@@ -12,7 +12,7 @@ with open("table.sql") as f:
 cur = connection.cursor()
 cur.execute(
     "INSERT INTO POSTS (title, content, author) VALUES (?, ?, ?)",
-    ("First Post", content , "Manish"),
+    ("First Post", content, "Manish"),
 )
 
 
