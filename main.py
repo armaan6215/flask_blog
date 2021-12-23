@@ -5,7 +5,10 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-model.create_table()
+try:
+    model.create_table()
+except Exception as e:
+    print("Error is", e)
 
 
 def db_connection():
@@ -43,15 +46,16 @@ def create_post():
 def posts():
     if request.args:
         args = request.args
-        if "order" in args:
-            order = args.get("order")
-        if order == "asc":
-            query = "SELECT * FROM POSTS"
-        elif order == "desc":
-            query = ("SELECT * FROM POSTS ORDER BY id DESC")
-    
+        for k, v in args.items():
+            if k=='order' and v == "asc":
+                query = "SELECT * FROM POSTS LIMIT 5"
+            elif k=='order' and v == "desc":
+                query = "SELECT * FROM POSTS ORDER BY id DESC LIMIT 5"
+            elif k == "author":
+                query = ("SELECT * FROM POSTS WHERE author='%s'" %v)
     else:
-        query = "SELECT * FROM POSTS"
+        query = "SELECT * FROM POSTS LIMIT 5"
+   
 
     conn = db_connection()
     posts = conn.execute(query).fetchall()
