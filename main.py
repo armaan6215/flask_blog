@@ -4,7 +4,6 @@ import model
 from datetime import datetime
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = "96159"
 
 model.create_table()
 
@@ -28,7 +27,6 @@ def create_post():
         author = request.form["author"]
         current_time = datetime.now()
 
-
         conn = db_connection()
 
         conn.execute(
@@ -43,10 +41,21 @@ def create_post():
 
 @app.route("/posts")
 def posts():
-    query = "SELECT * FROM POSTS"
+    if request.args:
+        args = request.args
+        if "order" in args:
+            order = args.get("order")
+        if order == "asc":
+            query = "SELECT * FROM POSTS"
+        elif order == "desc":
+            query = ("SELECT * FROM POSTS ORDER BY id DESC")
+    
+    else:
+        query = "SELECT * FROM POSTS"
+
     conn = db_connection()
     posts = conn.execute(query).fetchall()
-    return render_template("posts.html", posts=posts)
+    return render_template("posts.html", posts=posts), 200
 
 
-app.run(host="192.168.1.103", port=5000, debug=True)
+app.run(debug=True)
