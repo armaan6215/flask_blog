@@ -1,8 +1,12 @@
 import sqlite3 as sql
 from flask import Flask, render_template, request, url_for, redirect
+import model
+from datetime import datetime
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "96159"
+
+model.create_table()
 
 
 def db_connection():
@@ -22,11 +26,14 @@ def create_post():
         title = request.form["title"]
         content = request.form["content"]
         author = request.form["author"]
+        current_time = datetime.now()
+
 
         conn = db_connection()
+
         conn.execute(
-            "INSERT INTO POSTS (title, content, author) VALUES (?, ?, ?)",
-            (title, content, author),
+            "INSERT INTO POSTS (title, content, author, date_created) VALUES (?, ?, ?, ?)",
+            (title, content, author, current_time),
         )
         conn.commit()
         return redirect(url_for("posts"))
@@ -42,4 +49,4 @@ def posts():
     return render_template("posts.html", posts=posts)
 
 
-app.run(host="192.168.1.103", port=5000, threaded=True, debug=True)
+app.run(host="192.168.1.103", port=5000, debug=True)
