@@ -2,14 +2,8 @@
 
 {% block content %}
 <div>
-    Index
+    {{ message }}
 </div>
-{% for messages in get_flashed_messages() %}
-<div>
-    index
-    {{ messages }}
-</div>
-{% endfor %}
 {% endblock  %}
 
 

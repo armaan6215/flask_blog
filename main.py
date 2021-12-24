@@ -19,27 +19,31 @@ def db_connection():
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    message = "Welcome to Index page of Blog Created by Manish"
+    return render_template("index.html", message = message)
 
 
 @app.route("/create", methods=("GET", "POST"))
 def create_post():
+    message = ""
     if request.method == "POST":
         title = request.form["title"]
         content = request.form["content"]
         author = request.form["author"]
         current_time = datetime.now()
+        
+        if not title or not content:
+            message="Title and Description cannot be empty"
+        else:
+            conn = db_connection()
+            conn.execute(
+                "INSERT INTO POSTS (title, content, author, date_created) VALUES (?, ?, ?, ?)",
+                (title, content, author, current_time),
+            )
+            conn.commit()
+            return redirect(url_for("posts"))
 
-        conn = db_connection()
-
-        conn.execute(
-            "INSERT INTO POSTS (title, content, author, date_created) VALUES (?, ?, ?, ?)",
-            (title, content, author, current_time),
-        )
-        conn.commit()
-        return redirect(url_for("posts"))
-
-    return render_template("create_post.html")
+    return render_template("create_post.html", message=message)
 
 
 @app.route("/posts")
@@ -47,15 +51,14 @@ def posts():
     if request.args:
         args = request.args
         for k, v in args.items():
-            if k=='order' and v == "asc":
+            if k == "order" and v == "asc":
                 query = "SELECT * FROM POSTS LIMIT 5"
-            elif k=='order' and v == "desc":
+            elif k == "order" and v == "desc":
                 query = "SELECT * FROM POSTS ORDER BY id DESC LIMIT 5"
             elif k == "author":
-                query = ("SELECT * FROM POSTS WHERE author='%s'" %v)
+                query = "SELECT * FROM POSTS WHERE author='%s'" % v
     else:
-        query = "SELECT * FROM POSTS LIMIT 5"
-   
+        query = "SELECT * FROM POSTS"
 
     conn = db_connection()
     posts = conn.execute(query).fetchall()
