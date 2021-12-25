@@ -8,7 +8,7 @@ app = Flask(__name__)
 try:
     model.create_table()
 except Exception as e:
-    print("Error is", e)
+    print(e)
 
 
 def db_connection():
@@ -20,7 +20,7 @@ def db_connection():
 @app.route("/")
 def index():
     message = "Welcome to Index page of Blog Created by Manish"
-    return render_template("index.html", message = message)
+    return render_template("index.html", message=message)
 
 
 @app.route("/create", methods=("GET", "POST"))
@@ -31,9 +31,9 @@ def create_post():
         content = request.form["content"]
         author = request.form["author"]
         current_time = datetime.now()
-        
+
         if not title or not content:
-            message="Title and Description cannot be empty"
+            message = "Title and Description cannot be empty..."
         else:
             conn = db_connection()
             conn.execute(
@@ -48,17 +48,20 @@ def create_post():
 
 @app.route("/posts")
 def posts():
+    req_query = "SELECT * FROM POSTS {value}"
     if request.args:
         args = request.args
         for k, v in args.items():
             if k == "order" and v == "asc":
-                query = "SELECT * FROM POSTS LIMIT 5"
+                query = req_query.format(value="ORDER BY id ASC")
             elif k == "order" and v == "desc":
-                query = "SELECT * FROM POSTS ORDER BY id DESC LIMIT 5"
+                query = req_query.format(value="ORDER BY id DESC")
             elif k == "author":
-                query = "SELECT * FROM POSTS WHERE author='%s'" % v
+                query = req_query.format(value="WHERE author='%s'" % v)
+            elif k == "limit":
+                query = req_query.format(value="LIMIT %s" % v)
     else:
-        query = "SELECT * FROM POSTS"
+        query = req_query.format(value="")
 
     conn = db_connection()
     posts = conn.execute(query).fetchall()

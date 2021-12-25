@@ -7,14 +7,21 @@
     <title>Document</title>
   </head>
   <body>
-    <div style="background-color: rgb(35, 209, 180); width: 50%; margin-left: 25%; height: 30px; border-radius: 3px;">
+    <div
+      style="
+        background-color: rgb(35, 209, 180);
+        width: 50%;
+        margin-left: 25%;
+        height: 30px;
+        border-radius: 3px;
+      "
+    >
       <nav>
-        <a href="/" >Home</a> |
-        <a href="/create">Create Post</a> |
-        <a href="/posts">Posts</a> 
+        <a href="/">Home</a> | <a href="/create">Create Post</a> |
+        <a href="/posts">Posts</a>
       </nav>
     </div>
-    <br>
+    <br />
     <div class="content">{% block content %} {% endblock %}</div>
   </body>
 </html>
