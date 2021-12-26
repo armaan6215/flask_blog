@@ -67,5 +67,59 @@ def posts():
     posts = conn.execute(query).fetchall()
     return render_template("posts.html", posts=posts), 200
 
+@app.route("/users")
+def users():
+    query = "SELECT id, author FROM POSTS"
+    conn = db_connection()
+    users = conn.execute(query).fetchall()
+    return render_template("users.html", users=users)
 
+@app.route("/signup", methods=("GET", "POST"))
+def signup():
+    message = ""
+    if request.method == "POST":
+        fname = request.form['fname']
+        lname = request.form['lname']
+        email = request.form['email']
+        password = request.form['password']
+        cpassword = request.form['cpassword']
+
+        if not fname or not lname or not email or not password or not cpassword:
+            message = "All fields are mandatory"
+
+        elif password != cpassword:
+            message = "Passwords mismatched"
+
+        else:
+            conn = db_connection()
+            conn.execute(
+                "INSERT INTO USERS (fname, lname, email, pasword, cpasword) VALUES(?,?,?,?,?)",
+                ((fname, lname, email, password, cpassword))
+            )
+            conn.commit()
+            return redirect(url_for("user_lists"))
+
+    return render_template("signup.html", message=message)
+
+@app.route("/user_lists")
+def user_lists():
+    conn = db_connection()
+    user_lists = conn.execute("SELECT * FROM USERS").fetchall()
+    return render_template("user_lists.html", user_lists=user_lists)
+
+@app.route("/login", methods=("GET", "POST"))
+def login():
+    message = ""
+    if request.method == "POST":
+        email = request.form['email']
+        password = request.form['password']
+        conn = db_connection()
+        user_lists = conn.execute("SELECT email, pasword FROM USERS").fetchall()
+        for user in user_lists:
+            print(user)
+            if email == user['email'] and password == user['pasword']:
+                return redirect(url_for("index", message=[email, password]))
+            else:
+                message = "Incorrect Email or Password"
+    return render_template("login.html", message=message)
 app.run(debug=True)

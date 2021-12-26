@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<form action="" method="post" class="form">
+
+First Name:
+        <input type="text" name="fname" /><br><br>
+        Last Name:
+        <input type="text" name="lname" /><br><br>
+        Email:
+        <input type="email" name="email" /><br><br>
+        Password:
+        <input type="password" name="password" /><br><br>
+        Confirm Password:
+        <input type="password" name="cpassword" /> <br><br>
+        <button class="button" type="submit">Sign Up</button><br>
+        Already Signed Up? <a href="/login">Log in</a> 
+      </form>
+
+{% endblock %}
+    <h3 class="error">{{ message }}</h3>
+
+  

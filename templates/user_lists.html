@@ -1,0 +1,8 @@
+{% extends 'base.html' %} {% block content %} {% for user in user_lists %}
+<div>
+    <h3>Details are:</h3>
+    <h4>ID: {{ user['id'] }}</h4>
+    <h4>Name: {{ user['fname'] }} {{ user['lname'] }}</h4>
+    <h4>Email: {{ user['email'] }}</h4>
+</div> <br>
+{% endfor %} {% endblock %}

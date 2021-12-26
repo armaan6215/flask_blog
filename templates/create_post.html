@@ -1,15 +1,14 @@
 {% extends 'base.html' %} {% block content %}
-<form method="post" style="margin-left: 25%; width: 50%;">
+<form method="post" class="form">
   <h3>Add New Post</h3>
   Title:
   <br /><input type="text" name="title" /><br /><br />
   Description:
-  <br /><textarea name="content" cols="85" rows="10"></textarea
-  ><br /><br />
+  <br /><textarea name="content" cols="85" rows="10"></textarea><br /><br />
   Posted By:
   <br /><input type="text" name="author" /><br />
   <br />
-  <button type="submit" style="margin-left: 40%; background-color: rgb(36, 180, 36); border-radius: 5px; height: 30px;">POST</button>
+  <button class="button" type="submit">POST</button>
 </form>
-<h4 style="color: red;">{{ message }}</h4>
+<h4 class="error">{{ message }}</h4>
 {% endblock %}
