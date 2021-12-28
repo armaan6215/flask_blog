@@ -1,0 +1,32 @@
+.nav {
+  background-color: rgb(35, 209, 180);
+  width: 50%;
+  margin-left: 25%;
+  height: 30px;
+  border-radius: 3px;
+}
+
+.button {
+  margin-left: 40%;
+  background-color: rgb(36, 180, 36);
+  border-radius: 5px;
+  height: 30px;
+}
+
+.error {
+  color: red;
+  text-align: center;
+  font-size: xx-large;
+}
+
+.form {
+  margin-left: 25%;
+  width: 50%;
+}
+
+.post {
+  width: 50%;
+  margin-left: 25%;
+  border-radius: 20px;
+  border: 3px solid #73ad21;
+}

@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS POSTS(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    content TEXT NOT NULL,
+    author TEXT NOT NULL,
+    date_created TEXT NOT NULL
+);

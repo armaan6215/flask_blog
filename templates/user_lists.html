@@ -1,0 +1,10 @@
+{% extends 'base.html' %} {% block content %} {% for user in user_lists %}
+<div>
+    <h3>Details are:</h3>
+    <a href="/posts/{{ user.fname }}">
+    <h4>ID: {{ user['id'] }}</h4>
+    <h4>Name: {{ user['fname'] }} {{ user['lname'] }}</h4>
+    <h4>Email: {{ user['email'] }}</h4>
+    </a>
+</div> <br>
+{% endfor %} {% endblock %}
