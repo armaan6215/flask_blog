@@ -1,9 +1,11 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<hr>
 <h2>
-    {{ message['email'] }}
+    Welcome {{ message['fname'] }} {{ message['lname']}}
 </h2>
+<a href="/create/{{ message.fname }}"><button>Add post</button></a>
 {% endblock  %}
 
 

@@ -1,5 +1,5 @@
 import sqlite3 as sql
-from flask import Flask, render_template, request, url_for, redirect
+from flask import Flask, render_template, request, url_for, redirect, session
 import model
 from datetime import datetime
 
@@ -19,17 +19,19 @@ def db_connection():
 
 @app.route("/")
 def index():
-    message = "Welcome to Index page of Blog Created by Manish"
-    return render_template("index.html", message=message)
+    conn = db_connection()
+    users = conn.execute("SELECT fname FROM USERS").fetchall()
+    message = " to Index page of Blog Created by Manish"
+    return render_template("index.html", message=message, users=users)
 
 
-@app.route("/create", methods=("GET", "POST"))
-def create_post():
+@app.route("/create/<string:author>", methods=("GET", "POST"))
+def create_post(author):
     message = ""
     if request.method == "POST":
         title = request.form["title"]
         content = request.form["content"]
-        author = request.form["author"]
+        author = author
         current_time = datetime.now()
 
         if not title or not content:
@@ -65,13 +67,21 @@ def posts():
 
     conn = db_connection()
     posts = conn.execute(query).fetchall()
-    return render_template("posts.html", posts=posts), 200
+    return render_template("posts.html", posts=posts)
+
+@app.route("/posts/<string:author>")
+def posts_author(author):
+    query = "SELECT * from POSTS WHERE author='%s'" %author
+    conn=db_connection()
+    posts = conn.execute(query).fetchall()
+    return render_template("posts.html", posts=posts)
 
 @app.route("/users")
 def users():
     query = "SELECT id, author FROM POSTS"
     conn = db_connection()
     users = conn.execute(query).fetchall()
+    print(users)
     return render_template("users.html", users=users)
 
 @app.route("/signup", methods=("GET", "POST"))
@@ -92,12 +102,27 @@ def signup():
 
         else:
             conn = db_connection()
-            conn.execute(
-                "INSERT INTO USERS (fname, lname, email, pasword, cpasword) VALUES(?,?,?,?,?)",
-                ((fname, lname, email, password, cpassword))
-            )
-            conn.commit()
-            return redirect(url_for("user_lists"))
+            users = conn.execute("SELECT * FROM USERS").fetchall()
+            if len(users)>0:
+                for user in users:
+                    if email==user['email']:
+                        print(email, user['email'])
+                        message = "User already exist"
+                    else:
+                        conn.execute(
+                        "INSERT INTO USERS (fname, lname, email, pasword, cpasword) VALUES(?,?,?,?,?)",
+                        ((fname, lname, email, password, cpassword))
+                    )
+                        conn.commit()
+                        return redirect(url_for("user_lists"))
+
+            else:
+                conn.execute(
+                        "INSERT INTO USERS (fname, lname, email, pasword, cpasword) VALUES(?,?,?,?,?)",
+                        ((fname, lname, email, password, cpassword))
+                    )
+                conn.commit()
+                return redirect(url_for("user_lists"))
 
     return render_template("signup.html", message=message)
 
@@ -114,12 +139,12 @@ def login():
         email = request.form['email']
         password = request.form['password']
         conn = db_connection()
-        user_lists = conn.execute("SELECT email, pasword FROM USERS").fetchall()
+        user_lists = conn.execute("SELECT email, pasword, fname, lname FROM USERS").fetchall()
         for user in user_lists:
-            print(user)
             if email == user['email'] and password == user['pasword']:
-                return redirect(url_for("index", message=[email, password]))
+                return render_template("index.html", message = user)
             else:
                 message = "Incorrect Email or Password"
     return render_template("login.html", message=message)
-app.run(debug=True)
+
+app.run(debug=True, host="192.168.1.103" , port=5000)

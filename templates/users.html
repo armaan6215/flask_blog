@@ -1,6 +1,3 @@
 {% extends 'base.html' %} {% block content %} {% for user in users %}
 <div>{{ user['id'] }}: <a href="/posts">{{ user['author'] }}</a></div>
-{% if user['author'] == manish %}
-<h2>{{ user['author'] }}</h2>
-{% endif %}
 {% endfor %} {% endblock %}
