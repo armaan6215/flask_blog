@@ -1,12 +1,6 @@
-{% extends 'base.html' %}
-
-{% block content %}
-<hr>
-<h2>
-    Welcome {{ message['fname'] }} {{ message['lname']}}
-</h2>
-<a href="/create/{{ message.fname }}"><button>Add post</button></a>
-{% endblock  %}
-
-
-
+{% extends 'base.html' %} {% block content %}
+<hr />
+<h2>Welcome {{ message['fname'] }} {{ message['lname']}}</h2>
+<a href="/create/{{ message.fname }}">
+<button>Add post</button></a>
+{% endblock %}

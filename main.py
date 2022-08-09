@@ -1,14 +1,17 @@
+from datetime import datetime
+
 import sqlite3 as sql
 from flask import Flask, render_template, request, url_for, redirect, session
+
 import model
-from datetime import datetime
+
 
 app = Flask(__name__)
 
 try:
     model.create_table()
 except Exception as e:
-    print(e)
+    print("error", e)
 
 
 def db_connection():
@@ -69,12 +72,14 @@ def posts():
     posts = conn.execute(query).fetchall()
     return render_template("posts.html", posts=posts)
 
+
 @app.route("/posts/<string:author>")
 def posts_author(author):
-    query = "SELECT * from POSTS WHERE author='%s'" %author
-    conn=db_connection()
+    query = "SELECT * from POSTS WHERE author='%s'" % author
+    conn = db_connection()
     posts = conn.execute(query).fetchall()
     return render_template("posts.html", posts=posts)
+
 
 @app.route("/users")
 def users():
@@ -84,15 +89,16 @@ def users():
     print(users)
     return render_template("users.html", users=users)
 
+
 @app.route("/signup", methods=("GET", "POST"))
 def signup():
     message = ""
     if request.method == "POST":
-        fname = request.form['fname']
-        lname = request.form['lname']
-        email = request.form['email']
-        password = request.form['password']
-        cpassword = request.form['cpassword']
+        fname = request.form["fname"]
+        lname = request.form["lname"]
+        email = request.form["email"]
+        password = request.form["password"]
+        cpassword = request.form["cpassword"]
 
         if not fname or not lname or not email or not password or not cpassword:
             message = "All fields are mandatory"
@@ -103,28 +109,32 @@ def signup():
         else:
             conn = db_connection()
             users = conn.execute("SELECT * FROM USERS").fetchall()
-            if len(users)>0:
+            if len(users) > 0:
+                user_email = []
                 for user in users:
-                    if email==user['email']:
-                        print(email, user['email'])
-                        message = "User already exist"
-                    else:
-                        conn.execute(
+                    user_email.append(user["email"])
+                if(email in user_email):  
+                    print(email)
+                    message = f"{email} already exists"
+                else:
+                    conn.execute(
                         "INSERT INTO USERS (fname, lname, email, pasword, cpasword) VALUES(?,?,?,?,?)",
-                        ((fname, lname, email, password, cpassword))
+                        ((fname, lname, email, password, cpassword)),
                     )
-                        conn.commit()
-                        return redirect(url_for("user_lists"))
+                    conn.commit()
+                    print("Inserted")
+                    return redirect(url_for("user_lists"))
 
             else:
                 conn.execute(
-                        "INSERT INTO USERS (fname, lname, email, pasword, cpasword) VALUES(?,?,?,?,?)",
-                        ((fname, lname, email, password, cpassword))
-                    )
+                    "INSERT INTO USERS (fname, lname, email, pasword, cpasword) VALUES(?,?,?,?,?)",
+                    ((fname, lname, email, password, cpassword)),
+                )
                 conn.commit()
                 return redirect(url_for("user_lists"))
 
     return render_template("signup.html", message=message)
+
 
 @app.route("/user_lists")
 def user_lists():
@@ -132,19 +142,23 @@ def user_lists():
     user_lists = conn.execute("SELECT * FROM USERS").fetchall()
     return render_template("user_lists.html", user_lists=user_lists)
 
+
 @app.route("/login", methods=("GET", "POST"))
 def login():
     message = ""
     if request.method == "POST":
-        email = request.form['email']
-        password = request.form['password']
+        email = request.form["email"]
+        password = request.form["password"]
         conn = db_connection()
-        user_lists = conn.execute("SELECT email, pasword, fname, lname FROM USERS").fetchall()
+        user_lists = conn.execute(
+            "SELECT email, pasword, fname, lname FROM USERS"
+        ).fetchall()
         for user in user_lists:
-            if email == user['email'] and password == user['pasword']:
-                return render_template("index.html", message = user)
+            if email == user["email"] and password == user["pasword"]:
+                return render_template("index.html", message=user)
             else:
                 message = "Incorrect Email or Password"
     return render_template("login.html", message=message)
 
-app.run(debug=True, host="192.168.1.103" , port=5000)
+
+app.run(debug=True)
